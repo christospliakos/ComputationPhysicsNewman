@@ -34,7 +34,33 @@ for i, x in enumerate(x_series):
 # ----------------------------------------------------- #
 #                   Part b
 # ----------------------------------------------------- #
-l_ = 0.5  # light source
+l_ = 5e-7  # light source
 k = (2 * np.pi) / l_
-r = np.linspace(0, 1, N)
 I = (J_values['J_1_values'])
+
+side = 1e-6             # Size of the square in m
+points = 250             # Number of grid points along each side
+spacing = side / points  # Spacing of points in cm
+
+# Calculate the positions of the centers of the circles
+x1 = side / 2
+y1 = side / 2
+
+# Make an array to store the heights
+xi = np.empty([points, points], float)
+
+for i in range(points):
+    y = spacing * i
+    for j in range(points):
+        x = spacing * j
+
+        m = 1
+        r1 = np.sqrt(((x - x1) ** 2) + ((y - y1) ** 2))
+        value = (1 / np.pi) * simpsons_rule(lambda theta: np.cos((m  * theta) - ((k * r1) * np.sin(theta))), a, b, 100)
+
+        xi[i, j] = (value / (k * r1)) ** 2
+
+# Make the plot
+plt.imshow(xi, origin='lower', extent=[0, side, 0, side], vmax=0.1)
+plt.hot()
+plt.show()
