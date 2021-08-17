@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from Chapter5.DataFiles.gaussxw import gaussxw
 
 
 def trapezoidal_rule(f, a, b, N, approx_error=False, adaptive=None):
@@ -131,3 +132,21 @@ def romberg_integration(f, a, b, N, approx_error=False, adaptive=None):
             i += 1
 
         return error, N1 / 2, R[i - 1, len(I) - 2]
+
+
+class GaussianQuad:
+
+    def __init__(self, N):
+        self.N = N
+        self.x, self.w = gaussxw(N)
+
+    def integrate(self, f, a, b):
+        xp = (0.5 * (b - a) * self.x) + (0.5 * (b - a))
+        wp = 0.5 * (b - a) * self.w
+
+        integral = 0
+        for j in range(self.N):
+            integral += wp[j] * f(xp[j])
+
+        return integral
+
